@@ -35,6 +35,7 @@ public class ColorMixer extends RelativeLayout {
   private SeekBar blue=null;
   private SeekBar green=null;
   private OnColorChangedListener listener=null;
+  private OnColorChangedAndStoppedListener stopListener=null;
   
   public ColorMixer(Context context) {
     super(context);
@@ -60,6 +61,10 @@ public class ColorMixer extends RelativeLayout {
   
   public void setOnColorChangedListener(OnColorChangedListener listener) {
     this.listener=listener;
+  }
+  
+  public void setOnColorChangedAndStoppedListener(OnColorChangedAndStoppedListener listener) {
+	this.stopListener=listener;
   }
   
   public int getColor() {
@@ -143,11 +148,22 @@ public class ColorMixer extends RelativeLayout {
     }
     
     public void onStopTrackingTouch(SeekBar seekBar) {
-      // unused
+        int color=getColor();
+        
+        swatch.setBackgroundColor(color);
+        
+        if (stopListener!=null) {
+          stopListener.onColorChange(color);
+        }
     }
   };
   
   public interface OnColorChangedListener {
     public void onColorChange(int argb);
   }
+  
+  public interface OnColorChangedAndStoppedListener {
+	public void onColorChange(int argb);
+  }
 }
+
